@@ -6,17 +6,16 @@ function TodoForm(props) {
 
   const [input, setinput] = useState(props.edit ? props.edit.value : "");
   const [errorMsg, setErrorMsg] = useState(false);
-  const [inputError, setInputError] = useState(false)
+  const [inputError, setInputError] = useState(false);
 
-
-    const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if(input.length < 1) {
-      setInputError(true) 
+    if (input.length < 1) {
+      setInputError(true);
     }
     try {
       await axios.post("https://taskmanger-app.herokuapp.com/api/v1/tasks", {
-        'name': input,
+        "name": input,
       });
     } catch (error) {
       console.log(error);
@@ -24,7 +23,7 @@ function TodoForm(props) {
     }
     setTimeout(() => {
       setErrorMsg(false);
-      setInputError(false)
+      setInputError(false);
     }, 2000);
     setinput("");
   };
@@ -34,28 +33,29 @@ function TodoForm(props) {
   const handleChange = (e) => {
     setinput(e.target.value);
   };
-   
-  const submitUpdate = async(e) => {
-        e.preventDefault();
-      setinput('');
-          setTimeout(() => {
-      setInputError(false)
-    }, 2000);
-     try {
-      await axios.patch(`https://taskmanger-app.herokuapp.com/api/v1/tasks/${props.edit.id}`, {
-        'name': input
-      })
+
+  const submitUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.patch(
+        `https://taskmanger-app.herokuapp.com/api/v1/tasks/${props.edit.id}`,
+        {
+          name: input,
+        }
+      );
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-    props.onSubmit()
-  }
+    setinput("");
+
+    props.onSubmit();
+  };
 
   return (
     <form className="todo-form">
       {props.edit ? (
         <>
-            <input
+          <input
             name="name"
             type="text"
             placeholder="Update activity"
@@ -64,7 +64,9 @@ function TodoForm(props) {
             onChange={handleChange}
             ref={inputRef}
           />
-          <button className="todo-button" onClick={submitUpdate}>Update</button>
+          <button className="todo-button" onClick={submitUpdate}>
+            Update
+          </button>
         </>
       ) : (
         <>
@@ -77,7 +79,9 @@ function TodoForm(props) {
             onChange={handleChange}
             ref={inputRef}
           />
-          <button className="todo-button" onClick={handleSubmit}>Add todo</button>
+          <button className="todo-button" onClick={handleSubmit}>
+            Add todo
+          </button>
           <p className="errorMsg">{errorMsg}</p>
           {inputError && <p className="errorMsg">please input a task</p>}
         </>

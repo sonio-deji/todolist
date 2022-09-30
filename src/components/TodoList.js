@@ -13,30 +13,28 @@ function TodoList() {
         settodos(response.data.tasks);
       });
   }, [todos]);
-  const updateTodo = ( newValue) => {
+  const updateTodo = (newValue) => {
     if (!newValue.text || /^\s*$/.test(newValue.text)) {
       return;
     }
   };
   const addTodo = () => {
-    return <Todo />
-  }
-  const removeTodo = async(id) => {
+    return <Todo />;
+  };
+  const removeTodo = async (id) => {
     try {
-      await axios.delete(`https://taskmanger-app.herokuapp.com/api/v1/tasks/${id}`)
+      await axios.delete(
+        `https://taskmanger-app.herokuapp.com/api/v1/tasks/${id}`
+      );
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
   return (
     <div>
       <h1>What's the plan for today?</h1>
-      <TodoForm onSubmit={addTodo}/>
-      <Todo
-        todos={todos}
-        removeTodo={removeTodo}
-        updateTodo={updateTodo}
-      />
+      <TodoForm onSubmit={addTodo} />
+      <Todo todos={todos} removeTodo={removeTodo} updateTodo={updateTodo} />
     </div>
   );
 }
