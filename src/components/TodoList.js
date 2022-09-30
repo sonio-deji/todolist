@@ -1,48 +1,44 @@
-import React, { useState } from 'react'
-import Todo from './Todo';
-import TodoForm from './TodoForm'
+import React, { useState, useEffect } from "react";
+import Todo from "./Todo";
+import TodoForm from "./TodoForm";
+import axios from "axios";
 
 function TodoList() {
-const [todos, settodos] = useState([]);
+  const [todos, settodos] = useState([]);
 
-const addTodo = todo => {
-    if (!todo.text || /^\s*$/.test(todo.text)) {
-        return
-    }
-    const newTodos = [todo, ...todos]
-    settodos(newTodos)
-};
-const updateTodo = (todoId, newValue) => {
+  useEffect(() => {
+    axios
+      .get("https://taskmanger-app.herokuapp.com/api/v1/tasks")
+      .then((response) => {
+        settodos(response.data.tasks);
+      });
+  }, [todos]);
+  const updateTodo = ( newValue) => {
     if (!newValue.text || /^\s*$/.test(newValue.text)) {
-        return;
+      return;
     }
-    settodos(prev => prev.map(item => (item.id === todoId ? newValue : item)))
-}
-const removeTodo = id => {
-    const removeArr = [...todos].filter(todo => todo.id !== id)
-    settodos(removeArr)
-}
-const completeTodo = id => {
-    let updatedTodos = todos.map(todo => {
-        if(todo.id === id) {
-            todo.isComplete = !todo.isComplete;
-        }
-        return todo;
-    })
-    settodos(updatedTodos)
+  };
+  const addTodo = () => {
+    return <Todo />
+  }
+  const removeTodo = async(id) => {
+    try {
+      await axios.delete(`https://taskmanger-app.herokuapp.com/api/v1/tasks/${id}`)
+    } catch (error) {
+      console.log(error)
     }
+  };
   return (
     <div>
-        <h1 >What's the plan for today?</h1>
-        <TodoForm onSubmit={addTodo}/>
-        <Todo
+      <h1>What's the plan for today?</h1>
+      <TodoForm onSubmit={addTodo}/>
+      <Todo
         todos={todos}
-        completeTodo={completeTodo} 
         removeTodo={removeTodo}
         updateTodo={updateTodo}
-        />
+      />
     </div>
-  )
+  );
 }
 
-export default TodoList
+export default TodoList;
